@@ -1,0 +1,5 @@
+[extensions]
+prompt = ~/.yadr/hg_external/hg-prompt/prompt.py
+shelve =
+[ui]
+ignore = ~/.hgignore_global

@@ -1,6 +1,7 @@
 require 'rake'
 require 'fileutils'
 require File.join(File.dirname(__FILE__), 'bin', 'yadr', 'vundle')
+require File.join(File.dirname(__FILE__), 'lib', 'osx_tools_installer')
 
 desc "Hook our dotfiles into system-standard positions."
 task :install => [:submodule_init, :submodules] do
@@ -10,7 +11,11 @@ task :install => [:submodule_init, :submodules] do
   puts "======================================================"
   puts
 
-  install_homebrew if RUBY_PLATFORM.downcase.include?("darwin")
+  if RUBY_PLATFORM.downcase.include?("darwin")
+    install_osx_dev_tools
+    install_homebrew
+  end
+
   install_rvm_binstubs
 
   # this has all the runcoms from this directory.
@@ -24,8 +29,13 @@ task :install => [:submodule_init, :submodules] do
     file_operation(Dir.glob('{vim,vimrc}'))
     Rake::Task["install_vundle"].execute
   end
+  if want_to_install?('hg configs')
+    file_operation(Dir.glob('hg/*'))
+    install_hg_extentions
+  end
 
-  Rake::Task["install_prezto"].execute
+  #Rake::Task["install_prezto"].execute
+  Rake::Task['install_oh_my_zsh'].execute
 
   install_fonts if RUBY_PLATFORM.downcase.include?("darwin")
 
@@ -39,6 +49,12 @@ end
 task :install_prezto do
   if want_to_install?('zsh enhancements & prezto')
     install_prezto
+  end
+end
+
+task :install_oh_my_zsh do
+  if want_to_install?('zsh enhancements & Oh My ZSH')
+    install_oh_my_zsh
   end
 end
 
@@ -116,7 +132,11 @@ task :default => 'install'
 private
 def run(cmd)
   puts "[Running] #{cmd}"
-  `#{cmd}` unless ENV['DEBUG']
+  if ENV['DEBUG']
+    `echo`
+  else
+    `#{cmd}`
+  end
 end
 
 def number_of_cores
@@ -150,6 +170,36 @@ def install_rvm_binstubs
   puts
 end
 
+def install_hg_extentions
+  run %{hg}
+  if $?.success?
+    puts '======================================================'
+    puts 'Installing some Mercurial extensions'
+    puts '======================================================'
+    run %{
+      cd $HOME/.yadr
+      mkdir -p hg_external
+      hg clone http://bitbucket.org/sjl/hg-prompt/ hg_external/hg-prompt
+    }
+  else
+    puts '======================================================'
+    puts 'No Mercurial found :('
+    puts '======================================================'
+  end
+
+  puts
+  puts
+end
+
+def install_osx_dev_tools
+  puts '======================================================'
+  puts 'Installing OS X development tools/XCode'
+  puts '======================================================'
+  OSXToolsInstaller.new.install!
+  puts
+  puts
+end
+
 def install_homebrew
   run %{which brew}
   unless $?.success?
@@ -160,6 +210,26 @@ def install_homebrew
     run %{ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"}
   end
 
+  brews_installed_list = `brew list`.split.grep(/\w+/)
+
+  unless brews_installed_list.include? 'brew-cask'
+    run %{brew install brew-cask}
+  end
+
+  brewz = {
+    :original => %w{
+       zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher
+       mercurial postgresql wget
+       mc heroku-toolbelt htop imagemagick
+    },
+    :cask => %w{
+       firefox google-chrome skype dropbox
+       ngrok iterm2 sourcetree gitx-rowanj time-out textmate
+       virtualbox the-unarchiver keepassx gimp-lisanet libreoffice
+    }
+    # java android-studio
+  }
+
   puts
   puts
   puts "======================================================"
@@ -168,13 +238,36 @@ def install_homebrew
   run %{brew update}
   puts
   puts
+
+  brews_updates_list  = `brew outdated`.split("\n").
+                          collect { |line| line.split.map(&:strip).first }
+
+  casks_installed_list = `brew cask list`.split.grep(/\w+/)
+
+  brew_install_list = brewz[:original].reject { |c| brews_installed_list.include? c }
+  cask_install_list = brewz[:cask].reject     { |c| casks_installed_list.include? c }
+
   puts "======================================================"
-  puts "Installing Homebrew packages...There may be some warnings."
+  puts "Installing & Updating Homebrew packages..."
+  puts "There may be some warnings."
   puts "======================================================"
-  run %{brew install zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher}
-  run %{brew install macvim --custom-icons --override-system-vim --with-lua --with-luajit}
+  run %{brew install #{brew_install_list.join(' ')}}                  unless brew_install_list.empty?
+  cask_env = 'HOMEBREW_CASK_OPTS="--appdir=~/Applications"'
+  run %{#{cask_env} brew cask install #{cask_install_list.join(' ')}} unless cask_install_list.empty?
+  vim_opts = '--custom-icons --override-system-vim --with-lua --with-luajit'
+  run %{brew install macvim #{vim_opts}}                              unless brews_installed_list.include? 'macvim'
+  run %{brew upgrade #{brews_updates_list.join(' ')}}                 unless brews_updates_list.empty?
   puts
   puts
+
+  puts "====================================================="
+  puts "Some tricks..."
+  puts "====================================================="
+  run %{sudo chown root:wheel `which htop`}
+  run %{sudo chmod u+s `which htop`}
+  puts
+  puts
+
 end
 
 def install_fonts
@@ -269,6 +362,25 @@ def install_prezto
   run %{ mkdir -p $HOME/.zsh.after }
   run %{ mkdir -p $HOME/.zsh.prompts }
 
+  setup_zsh
+end
+
+def install_oh_my_zsh
+  puts "======================================================"
+  puts "Installing Oh My ZSH (ZSH Enhancements)..."
+  puts "======================================================"
+
+  run %{ ln -nfs "$HOME/.yadr/zsh/overwrites/.zshrc" "$HOME/.zshrc" }
+
+  puts
+
+  setup_zsh
+
+  puts
+  puts
+end
+
+def setup_zsh
   if ENV["SHELL"].include? 'zsh' then
     puts "Zsh is already configured as your shell of choice. Restart your session to load the new settings"
   else

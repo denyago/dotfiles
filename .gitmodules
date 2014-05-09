@@ -1,4 +1,4 @@
-[submodule "zsh/prezto"]
-	path = zsh/prezto
-	url = https://github.com/sorin-ionescu/prezto.git
-  ignore = dirty
+
+[submodule "zsh/oh_my_zsh/original"]
+	path = zsh/oh_my_zsh/original
+	url = git://github.com/robbyrussell/oh-my-zsh.git
