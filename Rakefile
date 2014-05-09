@@ -370,7 +370,7 @@ def install_oh_my_zsh
   puts "Installing Oh My ZSH (ZSH Enhancements)..."
   puts "======================================================"
 
-  run %{ ln -nfs "$HOME/.yadr/zsh/overwrites/.zshrc" "$HOME/.zshrc" }
+  run %{ ln -nfs "$HOME/.yadr/zsh/oh_my_zsh/overwrites/zshrc" "$HOME/.zshrc" }
 
   puts
 
