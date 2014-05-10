@@ -11,7 +11,7 @@ task :install => [:submodule_init, :submodules] do
   puts "======================================================"
   puts
 
-  if RUBY_PLATFORM.downcase.include?("darwin")
+  if mac_os_x?
     install_osx_dev_tools
     install_homebrew
   end
@@ -19,27 +19,29 @@ task :install => [:submodule_init, :submodules] do
   install_rvm_binstubs
 
   # this has all the runcoms from this directory.
-  file_operation(Dir.glob('git/*')) if want_to_install?('git configs (color, aliases)')
-  file_operation(Dir.glob('irb/*')) if want_to_install?('irb/pry configs (more colorful)')
-  file_operation(Dir.glob('ruby/*')) if want_to_install?('rubygems config (faster/no docs)')
-  file_operation(Dir.glob('ctags/*')) if want_to_install?('ctags config (better js/ruby support)')
-  file_operation(Dir.glob('tmux/*')) if want_to_install?('tmux config')
+  file_operation(Dir.glob('git/*'))    if want_to_install?('git configs (color, aliases)')
+  file_operation(Dir.glob('irb/*'))    if want_to_install?('irb/pry configs (more colorful)')
+  file_operation(Dir.glob('ruby/*'))   if want_to_install?('rubygems config (faster/no docs)')
+  file_operation(Dir.glob('ctags/*'))  if want_to_install?('ctags config (better js/ruby support)')
+  file_operation(Dir.glob('tmux/*'))   if want_to_install?('tmux config')
   file_operation(Dir.glob('vimify/*')) if want_to_install?('vimification of command line tools')
+
   if want_to_install?('vim configuration (highly recommended)')
     file_operation(Dir.glob('{vim,vimrc}'))
     Rake::Task["install_vundle"].execute
   end
-  if want_to_install?('hg configs')
+
+  if want_to_install?('hg configs and extensions')
     file_operation(Dir.glob('hg/*'))
     install_hg_extentions
   end
 
-  #Rake::Task["install_prezto"].execute
   Rake::Task['install_oh_my_zsh'].execute
 
-  install_fonts if RUBY_PLATFORM.downcase.include?("darwin")
-
-  install_term_theme if RUBY_PLATFORM.downcase.include?("darwin")
+  if mac_os_x?
+    install_fonts
+    install_term_theme
+  end
 
   run_bundle_config
 
@@ -255,7 +257,8 @@ def install_homebrew
   cask_env = 'HOMEBREW_CASK_OPTS="--appdir=~/Applications"'
   run %{#{cask_env} brew cask install #{cask_install_list.join(' ')}} unless cask_install_list.empty?
   vim_opts = '--custom-icons --override-system-vim --with-lua --with-luajit'
-  run %{brew install macvim #{vim_opts}}                              unless brews_installed_list.include? 'macvim'
+  run %{brew reinstall macvim #{vim_opts}}
+  run %{brew link --overwrite macvim}
   run %{brew upgrade #{brews_updates_list.join(' ')}}                 unless brews_updates_list.empty?
   puts
   puts
@@ -343,26 +346,8 @@ def ask(message, values)
   values[selection]
 end
 
-def install_prezto
-  puts
-  puts "Installing Prezto (ZSH Enhancements)..."
-
-  run %{ ln -nfs "$HOME/.yadr/zsh/prezto" "${ZDOTDIR:-$HOME}/.zprezto" }
-
-  # The prezto runcoms are only going to be installed if zprezto has never been installed
-  file_operation(Dir.glob('zsh/prezto/runcoms/z*'), :copy)
-
-  puts
-  puts "Overriding prezto ~/.zpreztorc with YADR's zpreztorc to enable additional modules..."
-  run %{ ln -nfs "$HOME/.yadr/zsh/prezto-override/zpreztorc" "${ZDOTDIR:-$HOME}/.zpreztorc" }
-
-  puts
-  puts "Creating directories for your customizations"
-  run %{ mkdir -p $HOME/.zsh.before }
-  run %{ mkdir -p $HOME/.zsh.after }
-  run %{ mkdir -p $HOME/.zsh.prompts }
-
-  setup_zsh
+def mac_os_x?
+  RUBY_PLATFORM.downcase.include?("darwin")
 end
 
 def install_oh_my_zsh
@@ -425,15 +410,6 @@ def file_operation(files, method = :symlink)
       run %{ ln -nfs "#{source}" "#{target}" }
     else
       run %{ cp -f "#{source}" "#{target}" }
-    end
-
-    # Temporary solution until we find a way to allow customization
-    # This modifies zshrc to load all of yadr's zsh extensions.
-    # Eventually yadr's zsh extensions should be ported to prezto modules.
-    if file == 'zshrc'
-      File.open(target, 'a') do |zshrc|
-        zshrc.puts('for config_file ($HOME/.yadr/zsh/*.zsh) source $config_file')
-      end
     end
 
     puts "=========================================================="

@@ -42,9 +42,9 @@ endif
 
 " ================ Turn Off Swap Files ==============
 
-set noswapfile
-set nobackup
-set nowb
+"" set noswapfile
+"" set nobackup
+"" set nowb
 
 " ================ Persistent Undo ==================
 " Keep undo history across sessions, by storing in file.
