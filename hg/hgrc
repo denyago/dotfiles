@@ -1,5 +1,12 @@
 [extensions]
 prompt = ~/.yadr/hg_external/hg-prompt/prompt.py
 shelve =
+color  =
 [ui]
 ignore = ~/.hgignore_global
+[color]
+status.modified = blue  bold
+status.added    = green bold
+status.removed  = red  bold white_background
+status.deleted  = red  bold underline
+status.unknown  = white bold underline

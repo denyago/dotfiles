@@ -223,6 +223,7 @@ def install_homebrew
        zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher
        mercurial postgresql wget
        mc heroku-toolbelt htop imagemagick
+       horndis
     },
     :cask => %w{
        firefox google-chrome skype dropbox
@@ -268,6 +269,9 @@ def install_homebrew
   puts "====================================================="
   run %{sudo chown root:wheel `which htop`}
   run %{sudo chmod u+s `which htop`}
+  horndis_path = `brew info horndis | grep 'Cellar/horndis' | grep '\\d\\+ files'`.split.first # /usr/local/Cellar/horndis/5 (6 files, 136K) *
+  kext_path    = File.join(horndis_path, '/Library/Extensions/HoRNDIS.kext')
+  run %{sudo cp -rfX #{kext_path} /Library/Extensions}
   puts
   puts
 
