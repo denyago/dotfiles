@@ -181,7 +181,8 @@ def install_hg_extentions
     run %{
       cd $HOME/.yadr
       mkdir -p hg_external
-      hg clone http://bitbucket.org/sjl/hg-prompt/ hg_external/hg-prompt
+      hg clone http://bitbucket.org/sjl/hg-prompt/   hg_external/hg-prompt
+      hg clone https://bitbucket.org/yujiewu/hgflow  hg_external/hg-flow
     }
   else
     puts '======================================================'

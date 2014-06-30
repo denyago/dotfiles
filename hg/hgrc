@@ -2,11 +2,18 @@
 prompt = ~/.yadr/hg_external/hg-prompt/prompt.py
 shelve =
 color  =
+strip  =
+mq     =
+rebase =
+flow   = ~/.yadr/hg_external/hg-flow/src/hgflow.py
 [ui]
 ignore = ~/.hgignore_global
+username = Denis Yagofarov <denyago@gmail.com>
 [color]
 status.modified = blue  bold
 status.added    = green bold
 status.removed  = red  bold white_background
 status.deleted  = red  bold underline
 status.unknown  = white bold underline
+[flow]
+autoshelve = true

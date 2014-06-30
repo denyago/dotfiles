@@ -3,3 +3,6 @@ syntax: glob
 *~
 .DS_Store
 .ruby-gemset
+
+*.swp
+*.swo
