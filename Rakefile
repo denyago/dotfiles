@@ -230,6 +230,7 @@ def install_homebrew
        firefox google-chrome skype dropbox
        ngrok iterm2 sourcetree gitx-rowanj time-out textmate
        virtualbox the-unarchiver keepassx gimp-lisanet libreoffice
+       tomighty
     }
     # java android-studio
   }
