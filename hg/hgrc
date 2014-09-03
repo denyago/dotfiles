@@ -7,8 +7,9 @@ mq     =
 rebase =
 flow   = ~/.yadr/hg_external/hg-flow/src/hgflow.py
 [ui]
-ignore = ~/.hgignore_global
+ignore   = ~/.hgignore_global
 username = Denis Yagofarov <denyago@gmail.com>
+merge    = internal:merge
 [color]
 status.modified = blue  bold
 status.added    = green bold
