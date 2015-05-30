@@ -227,7 +227,7 @@ def install_homebrew
     },
     :cask => %w{
        firefox google-chrome skype dropbox
-       ngrok iterm2 sourcetree gitx-rowanj time-out textmate
+       ngrok iterm2 sourcetree gitx-rowanj time-out textmate istat-menus
        virtualbox the-unarchiver keepassx gimp-lisanet libreoffice
        tomighty quicklook-json quicklook-csv betterzipql
     }
