@@ -230,7 +230,7 @@ def install_homebrew
        firefox google-chrome skype dropbox
        ngrok iterm2 sourcetree gitx-rowanj time-out textmate
        virtualbox the-unarchiver keepassx gimp-lisanet libreoffice
-       tomighty
+       tomighty quicklook-json quicklook-csv betterzipql
     }
     # java android-studio
   }
@@ -274,6 +274,7 @@ def install_homebrew
   horndis_path = `brew info horndis | grep 'Cellar/horndis' | grep '\\d\\+ files'`.split.first # /usr/local/Cellar/horndis/5 (6 files, 136K) *
   kext_path    = File.join(horndis_path, '/Library/Extensions/HoRNDIS.kext')
   run %{sudo cp -rfX #{kext_path} /Library/Extensions}
+  run %{defaults write com.apple.finder QLEnableTextSelection -bool true && killall Finder}
   puts
   puts
 
