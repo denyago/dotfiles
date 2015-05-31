@@ -222,14 +222,15 @@ def install_homebrew
     :original => %w{
        zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher
        mercurial postgresql wget mongodb redis
-       mc heroku-toolbelt htop imagemagick
-       horndis
+       mc heroku-toolbelt htop imagemagick node
     },
     :cask => %w{
        firefox google-chrome skype dropbox
-       ngrok iterm2 sourcetree gitx-rowanj time-out textmate istat-menus
-       virtualbox the-unarchiver keepassx gimp-lisanet libreoffice
+       ngrok iterm2 sourcetree gitx-rowanj time-out textmate
+       istat-menus heroku-toolbelt slack
+       virtualbox the-unarchiver keepassx lisanet-gimp libreoffice
        tomighty quicklook-json quicklook-csv betterzipql
+       horndis
     }
     # java android-studio
   }
@@ -270,9 +271,6 @@ def install_homebrew
   puts "====================================================="
   run %{sudo chown root:wheel `which htop`}
   run %{sudo chmod u+s `which htop`}
-  horndis_path = `brew info horndis | grep 'Cellar/horndis' | grep '\\d\\+ files'`.split.first # /usr/local/Cellar/horndis/5 (6 files, 136K) *
-  kext_path    = File.join(horndis_path, '/Library/Extensions/HoRNDIS.kext')
-  run %{sudo cp -rfX #{kext_path} /Library/Extensions}
   run %{defaults write com.apple.finder QLEnableTextSelection -bool true && killall Finder}
   puts
   puts
