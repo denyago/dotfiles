@@ -48,7 +48,7 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
-export PATH="/usr/local/bin:~/.rvm/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH="/usr/local/bin:$HOME/.rvm/bin:$PATH"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
