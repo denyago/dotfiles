@@ -214,8 +214,8 @@ def install_homebrew
 
   brews_installed_list = `brew list`.split.grep(/\w+/)
 
-  unless brews_installed_list.include? 'cask'
-    run %{brew install cask}
+  unless brews_installed_list.include? 'brew-cask'
+    run %{brew install caskroom/cask/brew-cask}
   end
 
   brewz = {
