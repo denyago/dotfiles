@@ -222,7 +222,7 @@ def install_homebrew
     :original => %w{
        zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher
        mercurial postgresql wget mongodb redis gpg
-       mc heroku-toolbelt htop imagemagick node
+       mc heroku-toolbelt htop imagemagick node tree graphviz
     },
     :cask => %w{
        firefox google-chrome skype dropbox
