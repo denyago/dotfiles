@@ -225,7 +225,7 @@ def install_homebrew
        mc heroku-toolbelt htop imagemagick node tree graphviz
     },
     :cask => %w{
-       firefox google-chrome skype dropbox
+       firefox google-chrome skype dropbox beardedspice
        ngrok iterm2 sourcetree rowanj-gitx time-out textmate
        istat-menus heroku-toolbelt slack rescuetime
        virtualbox the-unarchiver keepassx lisanet-gimp libreoffice
