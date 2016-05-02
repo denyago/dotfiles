@@ -19,14 +19,13 @@ task :install => [:submodule_init, :submodules] do
   install_rvm_binstubs
 
   # this has all the runcoms from this directory.
-  file_operation(Dir.glob('git/*'))    if want_to_install?('git configs (color, aliases)')
-  file_operation(Dir.glob('irb/*'))    if want_to_install?('irb/pry configs (more colorful)')
-  file_operation(Dir.glob('ruby/*'))   if want_to_install?('rubygems config (faster/no docs)')
-  file_operation(Dir.glob('ctags/*'))  if want_to_install?('ctags config (better js/ruby support)')
-  file_operation(Dir.glob('tmux/*'))   if want_to_install?('tmux config')
-
+  install_files(Dir.glob('git/*')) if want_to_install?('git configs (color, aliases)')
+  install_files(Dir.glob('irb/*')) if want_to_install?('irb/pry configs (more colorful)')
+  install_files(Dir.glob('ruby/*')) if want_to_install?('rubygems config (faster/no docs)')
+  install_files(Dir.glob('ctags/*')) if want_to_install?('ctags config (better js/ruby support)')
+  install_files(Dir.glob('tmux/*')) if want_to_install?('tmux config')
   if want_to_install?('vim configuration (highly recommended)')
-    file_operation(Dir.glob('{vim,vimrc}'))
+    install_files(Dir.glob('{vim,vimrc}'))
     Rake::Task["install_vundle"].execute
   end
 
@@ -59,6 +58,7 @@ task :install_oh_my_zsh do
   end
 end
 
+desc 'Updates the installation'
 task :update do
   Rake::Task["vundle_migration"].execute if needs_migration_to_vundle?
   Rake::Task["install"].execute
@@ -220,7 +220,7 @@ def install_homebrew
 
   brewz = {
     :original => %w{
-       zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher
+       zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher ghi
        mercurial postgresql wget mongodb redis gpg
        mc heroku-toolbelt htop imagemagick node tree graphviz
     },
@@ -399,7 +399,7 @@ def want_to_install? (section)
   end
 end
 
-def file_operation(files, method = :symlink)
+def install_files(files, method = :symlink)
   files.each do |f|
     file = f.split('/').last
     source = "#{ENV["PWD"]}/#{f}"
@@ -418,6 +418,18 @@ def file_operation(files, method = :symlink)
       run %{ ln -nfs "#{source}" "#{target}" }
     else
       run %{ cp -f "#{source}" "#{target}" }
+    end
+
+    # Temporary solution until we find a way to allow customization
+    # This modifies zshrc to load all of yadr's zsh extensions.
+    # Eventually yadr's zsh extensions should be ported to prezto modules.
+    source_config_code = "for config_file ($HOME/.yadr/zsh/*.zsh) source $config_file"
+    if file == 'zshrc'
+      File.open(target, 'a+') do |zshrc|
+        if zshrc.readlines.grep(/#{Regexp.escape(source_config_code)}/).empty?
+          zshrc.puts(source_config_code)
+        end
+      end
     end
 
     puts "=========================================================="
