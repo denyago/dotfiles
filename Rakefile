@@ -30,7 +30,7 @@ task :install => [:submodule_init, :submodules] do
   end
 
   if want_to_install?('hg configs and extensions')
-    file_operation(Dir.glob('hg/*'))
+    install_files(Dir.glob('hg/*'))
     install_hg_extentions
   end
 
@@ -136,7 +136,7 @@ def run(cmd)
   if ENV['DEBUG']
     `echo`
   else
-    `#{cmd}`
+    system cmd
   end
 end
 
@@ -215,14 +215,14 @@ def install_homebrew
   brews_installed_list = `brew list`.split.grep(/\w+/)
 
   unless brews_installed_list.include? 'brew-cask'
-    run %{brew install caskroom/cask/brew-cask}
+    run %{brew tap caskroom/cask}
   end
 
   brewz = {
     :original => %w{
-       zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher ghi
-       mercurial postgresql wget mongodb redis gpg
-       mc heroku-toolbelt htop imagemagick node tree graphviz
+       zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher
+       mercurial postgresql wget mongodb redis gnupg
+       midnight-commander heroku-toolbelt htop imagemagick node tree graphviz
     },
     :cask => %w{
        firefox google-chrome skype dropbox beardedspice
@@ -259,7 +259,7 @@ def install_homebrew
   run %{brew install #{brew_install_list.join(' ')}}                  unless brew_install_list.empty?
   cask_env = 'HOMEBREW_CASK_OPTS="--appdir=~/Applications"'
   run %{#{cask_env} brew cask install #{cask_install_list.join(' ')}} unless cask_install_list.empty?
-  vim_opts = '--custom-icons --override-system-vim --with-lua --with-luajit'
+  vim_opts = '--custom-icons --with-override-system-vim --with-lua --with-luajit'
   run %{brew reinstall macvim #{vim_opts}}
   run %{brew link --overwrite macvim}
   run %{brew upgrade #{brews_updates_list.join(' ')}}                 unless brews_updates_list.empty?
