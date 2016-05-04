@@ -16,6 +16,7 @@ task :install => [:submodule_init, :submodules] do
     install_homebrew
   end
 
+  install_rvm
   install_rvm_binstubs
 
   # this has all the runcoms from this directory.
@@ -158,6 +159,20 @@ def run_bundle_config
   puts "Configuring Bundlers for parallel gem installation"
   puts "======================================================"
   run %{ bundle config --global jobs #{bundler_jobs} }
+  puts
+end
+
+def install_rvm_binstubs
+  puts "======================================================"
+  puts "RVM"
+  puts "======================================================"
+  if system("rvm --version").nil?
+    puts "Installing"
+    run %{ curl -sSL https://get.rvm.io | bash -s stable }
+  else
+    ruts "Updating"
+    run %{ rvm get stable }
+  end
   puts
 end
 
