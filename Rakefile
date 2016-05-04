@@ -237,7 +237,7 @@ def install_homebrew
   brewz = {
     :original => %w{
        zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher
-       mercurial postgresql wget mongodb redis gnupg
+       mercurial postgresql wget mongodb redis gnupg watch
        midnight-commander heroku-toolbelt htop imagemagick node tree graphviz
     },
     :cask => %w{
