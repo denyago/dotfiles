@@ -16,9 +16,6 @@ task :install => [:submodule_init, :submodules] do
     install_homebrew
   end
 
-  install_rvm
-  install_rvm_binstubs
-
   # this has all the runcoms from this directory.
   install_files(Dir.glob('git/*')) if want_to_install?('git configs (color, aliases)')
   install_files(Dir.glob('irb/*')) if want_to_install?('irb/pry configs (more colorful)')
@@ -37,6 +34,9 @@ task :install => [:submodule_init, :submodules] do
 
   Rake::Task['install_oh_my_zsh'].execute
   install_fonts
+
+  install_rvm
+  install_rvm_binstubs
 
   if mac_os_x?
     install_term_theme
@@ -162,12 +162,13 @@ def run_bundle_config
   puts
 end
 
-def install_rvm_binstubs
+def install_rvm
   puts "======================================================"
   puts "RVM"
   puts "======================================================"
   if system("rvm --version").nil?
     puts "Installing"
+    run %{ gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3 }
     run %{ curl -sSL https://get.rvm.io | bash -s stable }
   else
     ruts "Updating"
@@ -236,7 +237,7 @@ def install_homebrew
   brewz = {
     :original => %w{
        zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher
-       mercurial postgresql wget mongodb redis gnupg
+       mercurial postgresql wget mongodb redis gnupg watch
        midnight-commander heroku-toolbelt htop imagemagick node tree graphviz
     },
     :cask => %w{
@@ -245,7 +246,7 @@ def install_homebrew
        istat-menus heroku-toolbelt slack rescuetime
        virtualbox the-unarchiver keepassx lisanet-gimp libreoffice
        tomighty quicklook-json quicklook-csv betterzipql
-       horndis imageoptim
+       horndis imageoptim controlplane
     }
     # java android-studio
   }
