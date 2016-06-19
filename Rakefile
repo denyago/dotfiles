@@ -14,6 +14,7 @@ task :install => [:submodule_init, :submodules] do
   if mac_os_x?
     install_osx_dev_tools
     install_homebrew
+    install_npm
   end
 
   # this has all the runcoms from this directory.
@@ -237,7 +238,7 @@ def install_homebrew
   brewz = {
     :original => %w{
        zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher
-       mercurial postgresql wget mongodb redis gnupg watch
+       mercurial postgresql wget mongodb redis gnupg watch node
        midnight-commander heroku-toolbelt htop imagemagick node tree graphviz
     },
     :cask => %w{
@@ -291,6 +292,13 @@ def install_homebrew
   puts
   puts
 
+end
+
+def install_npm
+  puts "======================================================"
+  puts "Installing usefull NPM modules."
+  puts "======================================================"  
+  run %{npm install -g imgcat-cli}
 end
 
 def install_fonts
