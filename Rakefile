@@ -384,6 +384,7 @@ def install_oh_my_zsh
   puts
 
   setup_zsh
+  install_iterm_integration if mac_os_x?
 
   puts
   puts
@@ -404,6 +405,14 @@ def setup_zsh
       run %{ chsh -s /bin/zsh }
     end
   end
+end
+
+def install_iterm_integration
+  puts "======================================================"
+  puts "Installing iTerm2 shell integration."
+  puts "======================================================"
+  run %{ curl -L https://iterm2.com/misc/zsh_startup.in >> $HOME/.yadr/zsh/iterm2_shell_integration.zsh }
+  run %{ echo "source $HOME/.yadr/zsh/iterm2_shell_integration.zsh" >> "$HOME/.zshrc" }
 end
 
 def want_to_install? (section)
