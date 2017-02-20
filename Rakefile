@@ -247,7 +247,7 @@ def install_homebrew
        istat-menus heroku-toolbelt slack rescuetime
        virtualbox the-unarchiver keepassx lisanet-gimp libreoffice
        tomighty quicklook-json quicklook-csv betterzipql
-       horndis imageoptim controlplane
+       horndis imageoptim controlplane kap java
     }
     # java android-studio
   }
