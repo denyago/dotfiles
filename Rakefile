@@ -399,7 +399,7 @@ def install_oh_my_zsh
 end
 
 def setup_zsh
-  if ENV["SHELL"].include? 'zsh' then
+  if "#{ENV['SHELL']}".include? 'zsh' then
     puts "Zsh is already configured as your shell of choice. Restart your session to load the new settings"
   else
     puts "Setting zsh as your default shell"
