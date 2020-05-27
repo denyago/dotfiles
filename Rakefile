@@ -22,15 +22,9 @@ task :install => [:submodule_init, :submodules] do
   install_files(Dir.glob('irb/*')) if want_to_install?('irb/pry configs (more colorful)')
   install_files(Dir.glob('ruby/*')) if want_to_install?('rubygems config (faster/no docs)')
   install_files(Dir.glob('ctags/*')) if want_to_install?('ctags config (better js/ruby support)')
-  install_files(Dir.glob('tmux/*')) if want_to_install?('tmux config')
   if want_to_install?('vim configuration (highly recommended)')
     install_files(Dir.glob('{vim,vimrc}'))
     Rake::Task["install_vundle"].execute
-  end
-
-  if want_to_install?('hg configs and extensions')
-    install_files(Dir.glob('hg/*'))
-    install_hg_extentions
   end
 
   Rake::Task['install_oh_my_zsh'].execute
@@ -188,28 +182,6 @@ def install_rvm_binstubs
   puts
 end
 
-def install_hg_extentions
-  run %{hg}
-  if $?.success?
-    puts '======================================================'
-    puts 'Installing some Mercurial extensions'
-    puts '======================================================'
-    run %{
-      cd $HOME/.yadr
-      mkdir -p hg_external
-      hg clone http://bitbucket.org/sjl/hg-prompt/   hg_external/hg-prompt
-      hg clone https://bitbucket.org/yujiewu/hgflow  hg_external/hg-flow
-    }
-  else
-    puts '======================================================'
-    puts 'No Mercurial found :('
-    puts '======================================================'
-  end
-
-  puts
-  puts
-end
-
 def install_osx_dev_tools
   puts '======================================================'
   puts 'Installing OS X development tools/XCode'
@@ -237,19 +209,20 @@ def install_homebrew
 
   brewz = {
     :original => %w{
-       zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher
-       mercurial postgresql wget mongodb redis gnupg watch node
-       midnight-commander heroku-toolbelt htop imagemagick node tree graphviz
+       zsh ctags git hub reattach-to-user-namespace the_silver_searcher
+       gnupg wget youtube-dl watch
+       htop imagemagick node tree graphviz
+       bat jq todo-txt
     },
     :cask => %w{
-       firefox google-chrome skype dropbox beardedspice
-       ngrok iterm2 sourcetree rowanj-gitx time-out textmate
-       istat-menus heroku-toolbelt slack rescuetime
-       virtualbox the-unarchiver keepassx lisanet-gimp libreoffice
+       firefox google-chrome spotify vlc
+       ngrok iterm2 fork atom typora visualvm intellij-idea-ce sequel-pro
+       istat-menus monitorcontrol muzzle
+       slack
+       the-unarchiver keepassxc
        tomighty quicklook-json quicklook-csv betterzipql
-       horndis imageoptim controlplane kap java
+       controlplane java zsa-wally
     }
-    # java android-studio
   }
 
   puts
@@ -297,8 +270,7 @@ end
 def install_npm
   puts "======================================================"
   puts "Installing usefull NPM modules."
-  puts "======================================================"  
-  run %{npm install -g imgcat-cli}
+  puts "======================================================"
 end
 
 def install_fonts

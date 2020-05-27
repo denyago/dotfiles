@@ -67,5 +67,10 @@ fi
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
+alias t="todo.sh"
+alias t-in="todo.sh ls -+V3 -+V2 -+V1 -+V4" #todo-inbox
+alias t-now="todo.sh ls '+V4\|(A)' -+V2 -+V1"   # todo-fire
+alias t-work="todo.sh ls +V3" # todo-work
+alias t-stuff="todo.sh ls +V2" # todo-stuff
 # My personal theme
 source $HOME/.yadr/zsh/oh_my_zsh/overwrites/robbyrussell.zsh-theme
