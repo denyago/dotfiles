@@ -216,12 +216,11 @@ def install_homebrew
     },
     :cask => %w{
        firefox google-chrome spotify vlc
-       ngrok iterm2 fork atom typora visualvm intellij-idea-ce sequel-pro
-       istat-menus monitorcontrol muzzle
-       slack
+       ngrok iterm2 fork atom typora visualvm intellij-idea-ce sequel-ace
+       istat-menus monitorcontrol
        the-unarchiver keepassxc
-       tomighty quicklook-json quicklook-csv betterzipql
-       controlplane java zsa-wally
+       quicklook-json quicklook-csv betterzipql
+       java zsa-wally zoomus docker
     }
   }
 
@@ -237,7 +236,7 @@ def install_homebrew
   brews_updates_list  = `brew outdated`.split("\n").
                           collect { |line| line.split.map(&:strip).first }
 
-  casks_installed_list = `brew cask list`.split.grep(/\w+/)
+  casks_installed_list = `brew list --cask`.split.grep(/\w+/)
 
   brew_install_list = brewz[:original].reject { |c| brews_installed_list.include? c }
   cask_install_list = brewz[:cask].reject     { |c| casks_installed_list.include? c }
@@ -248,7 +247,7 @@ def install_homebrew
   puts "======================================================"
   run %{brew install #{brew_install_list.join(' ')}}                  unless brew_install_list.empty?
   cask_env = 'HOMEBREW_CASK_OPTS="--appdir=~/Applications"'
-  run %{#{cask_env} brew cask install #{cask_install_list.join(' ')}} unless cask_install_list.empty?
+  run %{#{cask_env} brew install #{cask_install_list.join(' ')}} unless cask_install_list.empty?
   vim_opts = '--custom-icons --with-override-system-vim --with-lua --with-luajit'
   run %{brew reinstall macvim #{vim_opts}}
   run %{brew link --overwrite macvim}

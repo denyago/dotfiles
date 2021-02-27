@@ -119,3 +119,13 @@ set nomodeline
 
 " ================ Custom Settings ========================
 so ~/.yadr/vim/settings.vim
+
+if !has("gui_running")
+  let g:solarized_termcolors=256
+  set termguicolors
+  set background=dark
+  " solarized options
+  let g:solarized_visibility = "high"
+  let g:solarized_contrast = "high"
+  colorscheme solarized
+endif

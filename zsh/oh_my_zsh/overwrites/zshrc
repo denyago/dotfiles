@@ -74,3 +74,6 @@ alias t-work="todo.sh ls +V3" # todo-work
 alias t-stuff="todo.sh ls +V2" # todo-stuff
 # My personal theme
 source $HOME/.yadr/zsh/oh_my_zsh/overwrites/robbyrussell.zsh-theme
+
+# iTerm2 integration
+source $HOME/.yadr/zsh/iterm2_shell_integration.zsh
