@@ -198,7 +198,7 @@ def install_homebrew
     puts "Installing Homebrew, the OSX package manager...If it's"
     puts "already installed, this will do nothing."
     puts "======================================================"
-    run %{ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"}
+    run %{bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"}
   end
 
   brews_installed_list = `brew list`.split.grep(/\w+/)
@@ -209,7 +209,7 @@ def install_homebrew
 
   brewz = {
     :original => %w{
-       zsh ctags git hub reattach-to-user-namespace the_silver_searcher
+       zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher ghi
        gnupg wget youtube-dl watch
        htop imagemagick node tree graphviz
        bat jq todo-txt
@@ -425,18 +425,6 @@ def install_files(files, method = :symlink)
       run %{ cp -f "#{source}" "#{target}" }
     end
 
-    # Temporary solution until we find a way to allow customization
-    # This modifies zshrc to load all of yadr's zsh extensions.
-    # Eventually yadr's zsh extensions should be ported to prezto modules.
-    source_config_code = "for config_file ($HOME/.yadr/zsh/*.zsh) source $config_file"
-    if file == 'zshrc'
-      File.open(target, 'a+') do |zshrc|
-        if zshrc.readlines.grep(/#{Regexp.escape(source_config_code)}/).empty?
-          zshrc.puts(source_config_code)
-        end
-      end
-    end
-
     puts "=========================================================="
     puts
   end
@@ -463,13 +451,13 @@ def apply_theme_to_iterm_profile_idx(index, color_scheme_path)
 end
 
 def success_msg(action)
-  puts ""
-  puts "   _     _           _         "
-  puts "  | |   | |         | |        "
-  puts "  | |___| |_____  __| | ____   "
-  puts "  |_____  (____ |/ _  |/ ___)  "
-  puts "   _____| / ___ ( (_| | |      "
-  puts "  (_______\_____|\____|_|      "
-  puts ""
+  puts %q{
+   _     _           _
+  | |   | |         | |
+  | |___| |_____  __| | ____
+  |_____  (____ |/ _  |/ ___)
+   _____| / ___ ( (_| | |
+  (_______\_____|\____|_|
+  }
   puts "YADR has been #{action}. Please restart your terminal and vim."
 end

@@ -8,6 +8,8 @@
     # Yet Another Dotfile Repo v1.1
     # Now with Prezto and Vundle!
 
+Kudos to [skwp/dotfiles](https://github.com/skwp/dotfiles)! Please use it as a basis unless you really-really-really want to use denyago's. ;)
+
 ####   sh -c "\`curl -fsSL https://raw.githubusercontent.com/denyago/dotfiles/master/install.sh \`"
 
 **Always be sure to run `rake update` after pulling to ensure plugins are updated**
@@ -54,17 +56,17 @@ sh -c "`curl -fsSL https://raw.githubusercontent.com/skwp/dotfiles/master/instal
 #### Install iTerm Solarized Colors
 YADR will install Solarized colorschemes into your iTerm. Go to Profiles => Colors => Load Presets to pick Solarized Dark.
 
-#### Remap caps-lock to escape with [Seil](https://pqrs.org/osx/karabiner/seil.html.en)
+#### Remap caps-lock to escape with [Karabiner-Elements](https://pqrs.org/osx/karabiner/index.html)
 The escape key is the single most used key in vim.  Old keyboards used to have Escape where Tab is today. Apple keyboards are the worst with their tiny Esc keys. But all this is fixed by remapping Caps to Escape.  If you're hitting a small target in the corner, you are slowing yourself down considerably, and probably damaging your hands with repetitive strain injuries.
 
 #### Set up a system wide hotkey for iTerm (Keys=>Hotkey)
 Recommended Cmd-Escape, which is really Cmd-Capslock.
 
-#### In iTerm, uncheck "Use Lion-style full screen" on General
+#### In iTerm, uncheck "Native full screen windows" on General
 This will give you fast full screen windows that are switchable without switching to spaces.
 
-#### in MacVim, uncheck Prefer native fullscreen under Advanced settings
-Same as iTerm. The Lion style spaces navigation slows everything down for no reason.
+#### in MacVim, uncheck "Prefer native full-screen support" under Advanced settings
+Same as iTerm. The native spaces navigation slows everything down for no reason.
 
 ## If you want to run vim in terminal
 
@@ -288,10 +290,10 @@ Assuming your host system has Docker & Docker Compose properly installed, run:
 
     docker-compose run dotfiles
 
-This will build the container image it never built it before (which may take a while -- future times will be faster) and then run a `zsh` session inside that container for you.
+This will build the container image if it never built it before (which may take a while -- future times will be faster) and then run a `zsh` session inside that container for you.
 There you can play around, test commands, aliases, etc.
 
-*Warning*: this repo is primarly macOS oriented. So any support for Linux can only be done with the help of the community.
+*Warning*: this repo is primarily macOS oriented. So any support for Linux can only be done with the help of the community.
 
 
 ## Misc
