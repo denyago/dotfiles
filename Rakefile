@@ -34,6 +34,7 @@ task :install => [:submodule_init, :submodules] do
   install_rvm_binstubs
 
   if mac_os_x?
+    run "bin/macos"
     install_term_theme
   end
 
@@ -138,9 +139,11 @@ end
 
 def number_of_cores
   if RUBY_PLATFORM.downcase.include?("darwin")
-    cores = run %{ sysctl -n hw.ncpu }
+    run %{ sysctl -n hw.ncpu }
+    cores = `sysctl -n hw.ncpu`
   else
-    cores = run %{ nproc }
+    run %{ nproc }
+    cores = `nproc`
   end
   puts
   cores.to_i
@@ -204,7 +207,8 @@ def install_homebrew
   brews_installed_list = `brew list`.split.grep(/\w+/)
 
   unless brews_installed_list.include? 'brew-cask'
-    run %{brew tap caskroom/cask}
+    run %{brew tap homebrew/cask}
+    run %{brew tap homebrew/cask-drivers}
   end
 
   brewz = {
@@ -212,15 +216,15 @@ def install_homebrew
        zsh ctags git hub tmux reattach-to-user-namespace the_silver_searcher ghi
        gnupg wget youtube-dl watch
        htop imagemagick node tree graphviz
-       bat jq todo-txt
+       openjdk bat jq todo-txt
     },
     :cask => %w{
        firefox google-chrome spotify vlc
-       ngrok iterm2 fork atom typora visualvm intellij-idea-ce sequel-ace
-       istat-menus monitorcontrol
+       macvim ngrok iterm2 fork atom typora visualvm intellij-idea-ce sequel-ace
        the-unarchiver keepassxc
-       quicklook-json quicklook-csv betterzipql
-       java zsa-wally zoomus docker
+       quicklook-json quicklook-csv
+       zsa-wally zoom docker
+       monitorcontrol istat-menus intel-power-gadget
     }
   }
 
@@ -245,12 +249,13 @@ def install_homebrew
   puts "Installing & Updating Homebrew packages..."
   puts "There may be some warnings."
   puts "======================================================"
-  run %{brew install #{brew_install_list.join(' ')}}                  unless brew_install_list.empty?
+  brew_install_list.each do |formula|
+    run %{brew install #{formula}}
+  end
   cask_env = 'HOMEBREW_CASK_OPTS="--appdir=~/Applications"'
-  run %{#{cask_env} brew install #{cask_install_list.join(' ')}} unless cask_install_list.empty?
-  vim_opts = '--custom-icons --with-override-system-vim --with-lua --with-luajit'
-  run %{brew reinstall macvim #{vim_opts}}
-  run %{brew link --overwrite macvim}
+  cask_install_list.each do |formula|
+    run %{#{cask_env} brew install --cask #{formula}}
+  end
   run %{brew upgrade #{brews_updates_list.join(' ')}}                 unless brews_updates_list.empty?
   puts
   puts
@@ -390,8 +395,8 @@ def install_iterm_integration
   puts "======================================================"
   puts "Installing iTerm2 shell integration."
   puts "======================================================"
-  run %{ curl -L https://iterm2.com/misc/zsh_startup.in >> $HOME/.yadr/zsh/iterm2_shell_integration.zsh }
-  run %{ echo "source $HOME/.yadr/zsh/iterm2_shell_integration.zsh" >> "$HOME/.zshrc" }
+  run %{ curl -L https://iterm2.com/misc/zsh_startup.in > $HOME/.yadr/zsh/iterm2_shell_integration.zsh }
+  run %{ echo "source $HOME/.yadr/zsh/iterm2_shell_integration.zsh" >> "$HOME/.zshrc" } unless File.read("#{ENV['HOME']}/.zshrc").include?("iterm2_shell_integration")
 end
 
 def want_to_install? (section)
