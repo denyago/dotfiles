@@ -221,10 +221,11 @@ def install_homebrew
     :cask => %w{
        firefox google-chrome spotify vlc
        macvim ngrok iterm2 fork atom typora visualvm intellij-idea-ce sequel-ace
-       the-unarchiver keepassxc
+       the-unarchiver keepassxc evernote
        quicklook-json quicklook-csv
        zsa-wally zoom docker
        monitorcontrol istat-menus intel-power-gadget
+       kensington-trackball-works
     }
   }
 
