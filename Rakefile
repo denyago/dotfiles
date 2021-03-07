@@ -225,7 +225,7 @@ def install_homebrew
        quicklook-json quicklook-csv
        zsa-wally zoom docker
        monitorcontrol istat-menus intel-power-gadget
-       kensington-trackball-works
+       kensington-trackball-works syncthing
     }
   }
 
